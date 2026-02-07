@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Valentine 💖</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: pink;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+  text-align: center;
+}
+
+h1 {
+  padding: 0 10px;
+  z-index: 3;
+}
+
+.cat {
+  font-size: clamp(70px, 20vw, 100px);
+  animation: bounce 1s infinite;
+  margin: 15px;
+}
+
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.buttons {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  height: 160px;
+}
+
+button {
+  padding: 14px 26px;
+  font-size: clamp(16px, 4vw, 20px);
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  transition: left 0.6s ease, top 0.6s ease, transform 0.3s;
+  touch-action: manipulation;
+}
+
+#yes {
+  background: red;
+  color: white;
+  left: 20%;
+  top: 40%;
+}
+
+#no {
+  background: white;
+  color: red;
+  left: 55%;
+  top: 40%;
+}
+
+/* Floating hearts */
+.heart {
+  position: fixed;
+  bottom: -20px;
+  font-size: 22px;
+  animation: float 6s linear forwards;
+  pointer-events: none;
+}
+
+@keyframes float {
+  to {
+    transform: translateY(-110vh);
+    opacity: 0;
+  }
+}
+
+/* Confetti */
+.confetti {
+  position: fixed;
+  top: -10px;
+  font-size: 22px;
+  animation: fall 3s linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Full screen */
+#finalScreen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #ff4d6d, #ff9a9e);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: white;
+  padding: 20px;
+  z-index: 10;
+}
+</style>
+</head>
+
+<body>
+
+<h1 id="question"></h1>
+<div class="cat" id="cat">🐱🌻</div>
+
+<div class="buttons">
+  <button id="yes">Yes 💖</button>
+  <button id="no">No 💔</button>
+</div>
+
+<div id="finalScreen">
+  <h1 id="finalText"></h1>
+  <p>You make my world brighter 😘</p>
+  <div style="font-size:clamp(60px,20vw,100px);">😽💘</div>
+</div>
+
+<!-- Romantic music (royalty-free sample) -->
+<audio id="music" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_8e3b1db4d6.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+/* ✨ CUSTOM NAMES */
+const yourName = "Himanshu";
+const theirName = "My Love";
+
+/* SET TEXT */
+document.getElementById("question").textContent =
+  `${theirName}, will you be my Valentine? 💘`;
+
+document.getElementById("finalText").textContent =
+  `Happy Valentine’s Day 💖 ${theirName}`;
+
+/* ELEMENTS */
+const yes = document.getElementById("yes");
+const no = document.getElementById("no");
+const cat = document.getElementById("cat");
+const finalScreen = document.getElementById("finalScreen");
+const container = document.querySelector(".buttons");
+const music = document.getElementById("music");
+
+let scale = 1;
+
+/* HEARTS */
+function createHeart() {
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.textContent = "💖";
+  h.style.left = Math.random() * 100 + "vw";
+  document.body.appendChild(h);
+  setTimeout(() => h.remove(), 6000);
+}
+setInterval(createHeart, 500);
+
+/* CONFETTI */
+function confettiBurst() {
+  const emojis = ["🎉","💖","✨","💘"];
+  for (let i = 0; i < 40; i++) {
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    c.style.left = Math.random() * 100 + "vw";
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 3000);
+  }
+}
+
+/* MOVE NO (desktop + mobile) */
+function moveNo() {
+  if (navigator.vibrate) navigator.vibrate(50); // 📳 vibration
+
+  const maxX = container.clientWidth - no.offsetWidth;
+  const maxY = container.clientHeight - no.offsetHeight;
+
+  no.style.left = Math.random() * maxX + "px";
+  no.style.top = Math.random() * maxY + "px";
+}
+
+no.addEventListener("mouseenter", moveNo);
+no.addEventListener("touchstart", moveNo);
+
+/* NO click grows YES */
+no.addEventListener("click", () => {
+  scale += 0.25;
+  yes.style.transform = `scale(${scale})`;
+});
+
+/* YES click */
+yes.addEventListener("click", () => {
+  cat.textContent = "😽🌸";
+  finalScreen.style.display = "flex";
+  confettiBurst();
+  music.play(); // 🔊 mobile-safe (user gesture)
+});
+</script>
+
+</body>
+</html>
